@@ -1,4 +1,4 @@
-import type { Message } from './message'
+import type { Message, Sender } from './message'
 
 export type MessageBubbleProps = {
   message: Message
@@ -6,4 +6,8 @@ export type MessageBubbleProps = {
 
 export type MessageListProps = {
   messages: Message[]
+}
+
+export type MessageInputProps = {
+  onSend: (text: string, sender: Sender) => void
 }
