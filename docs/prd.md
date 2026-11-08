@@ -22,7 +22,7 @@ Janela única de chat, sem backend, em que a mesma pessoa envia mensagens **como
 - Vite + React + TypeScript + Tailwind (já configurados).
 - Tipos em `src/types`, usando `type` (nunca `interface`).
 - Componentes em `src/components`.
-- Histórico em `useState` no componente raiz, sem persistência.
+- Histórico em `useState` dentro do `ChatWindow` (que concentra as funcionalidades do chat), sem persistência.
 
 ## 5. Requisitos funcionais
 
@@ -67,12 +67,12 @@ src/
 ├── types/
 │   └── message.ts
 ├── components/
-│   ├── ChatWindow.tsx      # layout geral: histórico + input, largura 2xl
+│   ├── ChatWindow.tsx      # state `messages`, handler de envio, layout: histórico + input, largura 2xl
 │   ├── MessageList.tsx     # lista, scroll
 │   ├── MessageBubble.tsx   # balão individual (alinhamento por sender)
 │   ├── MessageInput.tsx    # card com textarea, toggle e enviar
 │   └── SenderToggle.tsx    # botão toggle usuário/robô
-└── App.tsx                 # state `messages`, handler de envio
+└── App.tsx                 # só renderiza o ChatWindow
 ```
 
 ## 9. Plano de implementação (tarefas em ordem progressiva)
@@ -83,7 +83,7 @@ src/
 - Aplicar fundo cinza claro e `min-h-screen` no layout raiz.
 - **Pronto quando:** app roda com tela cinza vazia, sem erros de lint/tsc.
 
-### Tarefa 2 — State do histórico em `App`
+### Tarefa 2 — State do histórico (no `ChatWindow`)
 - `useState<Message[]>([])` e função `handleSend(text, sender)` que cria a mensagem (id via `crypto.randomUUID()`, `createdAt: Date.now()`).
 - **Pronto quando:** a função adiciona mensagens ao state (verificável temporariamente via log).
 

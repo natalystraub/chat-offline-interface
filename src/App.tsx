@@ -1,3 +1,9 @@
+import ChatWindow from './components/ChatWindow'
+
 export default function App() {
-  return <div></div>;
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <ChatWindow />
+    </div>
+  )
 }
