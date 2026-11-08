@@ -1,35 +1,58 @@
-import { useEffect, useRef, useState } from 'react'
-import type { MessageInputProps } from '../types/components'
+import { useEffect, useRef, useState } from 'react';
+import SenderToggle from './SenderToggle';
+import type { MessageInputProps } from '../types/components';
 
-export default function MessageInput({ onSend }: MessageInputProps) {
-  const [text, setText] = useState('')
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+const TYPING_TIMEOUT_MS = 3000;
 
-  const canSend = text.trim().length > 0
+export default function MessageInput({ onSend, onTypingChange }: MessageInputProps) {
+  const [text, setText] = useState('');
+  const [isBot, setIsBot] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const canSend = text.trim().length > 0;
+
+  console.log(text.trim());
+
+  // Avisa o chat quem está "digitando". Volta a null com o campo vazio ou
+  // depois de TYPING_TIMEOUT_MS sem digitar (cada tecla reinicia a contagem).
+  useEffect(() => {
+    if (!canSend) {
+      onTypingChange(null);
+      return;
+    }
+    onTypingChange(isBot ? 'bot' : 'user');
+    const timer = setTimeout(() => onTypingChange(null), TYPING_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [text, canSend, isBot, onTypingChange]);
 
   // Ajusta a altura do textarea ao conteúdo (o limite é o max-h do CSS).
   useEffect(() => {
-    const textarea = textareaRef.current
-    if (!textarea) return
-    textarea.style.height = 'auto'
-    textarea.style.height = `${textarea.scrollHeight}px`
-  }, [text])
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, [text]);
 
   function send() {
-    if (!canSend) return
-    onSend(text.trim(), 'user')
-    setText('')
+    if (!canSend) return;
+    onSend(text.trim(), isBot ? 'bot' : 'user');
+    setText('');
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
-      event.preventDefault()
-      send()
+      event.preventDefault();
+      send();
     }
   }
 
   return (
-    <div className="flex items-end gap-2 rounded-2xl border border-gray-300 bg-white p-3 shadow-sm">
+    <div
+      className={`flex items-end gap-2 rounded-2xl border-2 bg-white p-3 shadow-sm ${
+        isBot ? 'border-purple-600' : 'border-gray-300'
+      }`}
+    >
+      <SenderToggle isBot={isBot} onToggle={() => setIsBot((current) => !current)} />
       <textarea
         ref={textareaRef}
         value={text}
@@ -48,5 +71,5 @@ export default function MessageInput({ onSend }: MessageInputProps) {
         Enviar
       </button>
     </div>
-  )
+  );
 }

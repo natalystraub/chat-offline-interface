@@ -5,6 +5,7 @@ import MessageList from './MessageList'
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([])
+  const [typingSender, setTypingSender] = useState<Sender | null>(null)
 
   function handleSend(text: string, sender: Sender) {
     const message: Message = {
@@ -19,9 +20,11 @@ export default function ChatWindow() {
   return (
     <div className="mx-auto flex h-screen w-full max-w-2xl flex-col">
       <div className="flex-1 overflow-y-auto p-4">
-        <MessageList messages={messages} />
+        <MessageList messages={messages} typingSender={typingSender} />
       </div>
-      <div className="p-4"><MessageInput onSend={handleSend} /></div>
+      <div className="p-4">
+        <MessageInput onSend={handleSend} onTypingChange={setTypingSender} />
+      </div>
     </div>
   )
 }
