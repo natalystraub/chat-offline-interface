@@ -36,6 +36,7 @@ export default function MessageInput({ onSend, onTypingChange }: MessageInputPro
     if (!canSend) return;
     onSend(text.trim(), isBot ? 'bot' : 'user');
     setText('');
+    textareaRef.current?.focus();
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -47,8 +48,10 @@ export default function MessageInput({ onSend, onTypingChange }: MessageInputPro
 
   return (
     <div
-      className={`flex items-end gap-2 rounded-2xl border-2 bg-white p-3 shadow-sm ${
-        isBot ? 'border-purple-600' : 'border-gray-300'
+      className={`flex items-end gap-2 rounded-2xl border-2 bg-white p-3 shadow-sm focus-within:ring-2 ${
+        isBot
+          ? 'border-purple-600 focus-within:ring-purple-300'
+          : 'border-gray-300 focus-within:ring-blue-300'
       }`}
     >
       <SenderToggle isBot={isBot} onToggle={() => setIsBot((current) => !current)} />
@@ -59,13 +62,15 @@ export default function MessageInput({ onSend, onTypingChange }: MessageInputPro
         onKeyDown={handleKeyDown}
         placeholder="Digite uma mensagem..."
         rows={1}
+        aria-label="Mensagem"
         className="max-h-40 flex-1 resize-none overflow-y-auto outline-none"
       />
       <button
         type="button"
         onClick={send}
         disabled={!canSend}
-        className="rounded-lg bg-blue-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-gray-300"
+        aria-label="Enviar mensagem"
+        className="rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 bg-blue-600 px-4 py-2 text-white disabled:cursor-not-allowed disabled:bg-gray-300"
       >
         Enviar
       </button>
