@@ -11,7 +11,6 @@ export default function MessageInput({ onSend, onTypingChange }: MessageInputPro
 
   const canSend = text.trim().length > 0;
 
-  console.log(text.trim());
 
   // Avisa o chat quem está "digitando". Volta a null com o campo vazio ou
   // depois de TYPING_TIMEOUT_MS sem digitar (cada tecla reinicia a contagem).
