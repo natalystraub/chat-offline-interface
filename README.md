@@ -1,79 +1,61 @@
-# React + TypeScript + Vite
+# Chat Offline
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Janela de chat sem backend, exibida dentro de uma moldura de iPhone 16 Pro Max. A mesma pessoa envia mensagens **como usuário** ou **como robô**, alternando por um toggle no campo de entrada. Serve para simular e prototipar conversas visualmente.
 
-Currently, two official plugins are available:
+O histórico vive apenas em memória (state do React) e é perdido ao recarregar a página.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Funcionalidades
 
-## React Compiler
+- Envio de mensagens pelo botão ou por **Enter** (**Shift+Enter** quebra linha).
+- Toggle usuário/robô: mensagens de usuário ficam à direita, de robô à esquerda, e o card do input ganha borda roxa no modo robô.
+- Textarea que cresce conforme o conteúdo (com limite de altura).
+- Indicador de "digitando" que some após 3 segundos sem digitar.
+- Auto-scroll para a última mensagem e foco devolvido ao campo após enviar.
+- Acessibilidade básica: `aria-label` nos botões e foco visível, com fluxo utilizável só por teclado.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Stack
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+- [Vite](https://vite.dev) + [React](https://react.dev) + TypeScript
+- [Tailwind CSS](https://tailwindcss.com)
+- [lucide-react](https://lucide.dev) (ícones)
 
-## Expanding the ESLint configuration
+## Como rodar
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Outros scripts:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Comando           | O que faz                                 |
+| ----------------- | ----------------------------------------- |
+| `npm run build`   | Checa os tipos e gera o build de produção |
+| `npm run preview` | Serve o build localmente                  |
+| `npm run lint`    | Roda o ESLint                             |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Estrutura
 
 ```
-# chat-offline-interface
+src/
+├── types/
+│   ├── message.ts        # Sender e Message
+│   └── components.ts     # props dos componentes
+├── components/
+│   ├── ChatWindow.tsx    # state das mensagens e layout do chat
+│   ├── MessageList.tsx   # lista, auto-scroll e indicador de digitando
+│   ├── MessageBubble.tsx # balão individual (alinhado por remetente)
+│   ├── MessageInput.tsx  # card com textarea, toggle e botão de enviar
+│   ├── SenderToggle.tsx  # toggle usuário/robô
+│   └── TypingDots.tsx    # animação de "digitando"
+└── App.tsx               # moldura do iPhone + ChatWindow
+```
+
+## Convenções
+
+- Tipos em `src/types`, sempre com `type` (nunca `interface`).
+- Componentes em `src/components`.
+
+## Documentação
+
+O PRD com requisitos e plano de implementação está em [docs/prd.md](docs/prd.md).
